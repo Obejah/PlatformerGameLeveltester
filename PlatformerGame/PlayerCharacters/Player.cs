@@ -30,7 +30,7 @@ namespace PlatformerGame.PlayerCharacters
 
         // --- Properties ---
         public int Health { get; set; }
-        public int MaxHealth { get; set; } = 3;
+        public int MaxHealth { get; set; } = 1;
         public PlayerState State { get; set; } = PlayerState.Idle;
         public PowerUp CurrentPowerUp { get; set; }
         public bool IsGrounded { get; set; }
@@ -85,11 +85,9 @@ namespace PlatformerGame.PlayerCharacters
 
         public override void MoveAndCollide(float dt)
         {
-            // 1. Move Vertically FIRST
             Position += new Vector(0, Velocity.Y * dt);
             CheckPlatformCollisions(isHorizontal: false);
 
-            // 2. Move Horizontally SECOND
             Position += new Vector(Velocity.X * dt, 0);
             CheckPlatformCollisions(isHorizontal: true);
         }
@@ -99,12 +97,8 @@ namespace PlatformerGame.PlayerCharacters
             if (Game.Instance.CurrentLevel == null) return;
 
             Rect checkBounds = GetBounds();
-
             if (isHorizontal)
             {
-                // CRITICAL FIX: Shrink the box by 2 pixels on all sides.
-                // This prevents WPF from thinking the player is "inside" the floor 
-                // just because their bottom edge is touching the platform's top edge.
                 checkBounds = new Rect(Position.X + 1, Position.Y + 1, Size.X - 2, Size.Y - 2);
             }
 
@@ -112,46 +106,51 @@ namespace PlatformerGame.PlayerCharacters
 
             foreach (var entity in nearbyEntities)
             {
-                if (entity is Platform platform)
+                if (entity is Platform || entity is GameBlock)
                 {
-                    if (checkBounds.IntersectsWith(platform.GetBounds()))
+                    bool isOneWay = entity is Platform p && p.IsOneWay;
+                    bool isSolid = entity is GameBlock b && b.IsSolid;
+
+                    if (checkBounds.IntersectsWith(entity.GetBounds()))
                     {
                         if (isHorizontal)
                         {
-                            // Solid blocks stop horizontal movement
-                            if (!platform.IsOneWay)
+                            if (!isOneWay)
                             {
                                 if (Velocity.X > 0)
-                                    Position = new Vector(platform.Position.X - Size.X, Position.Y);
+                                    Position = new Vector(entity.Position.X - Size.X, Position.Y);
                                 else if (Velocity.X < 0)
-                                    Position = new Vector(platform.Position.X + platform.Size.X, Position.Y);
+                                    Position = new Vector(entity.Position.X + entity.Size.X, Position.Y);
 
                                 Velocity = new Vector(0, Velocity.Y);
                             }
                         }
                         else
                         {
-                            if (platform.IsOneWay)
+                            if (isOneWay)
                             {
-                                // One-way: Only collide if falling AND we were above it last frame
-                                if (Velocity.Y > 0 && previousPosition.Y + Size.Y <= platform.Position.Y + 10)
+                                if (Velocity.Y > 0 && previousPosition.Y + Size.Y <= entity.Position.Y + 10)
                                 {
-                                    Position = new Vector(Position.X, platform.Position.Y - Size.Y);
+                                    Position = new Vector(Position.X, entity.Position.Y - Size.Y);
                                     Velocity = new Vector(Velocity.X, 0);
                                     IsGrounded = true;
                                 }
                             }
                             else
                             {
-                                // Solid vertical collision
                                 if (Velocity.Y > 0) // Landed on top
                                 {
-                                    Position = new Vector(Position.X, platform.Position.Y - Size.Y);
+                                    Position = new Vector(Position.X, entity.Position.Y - Size.Y);
                                     IsGrounded = true;
                                 }
-                                else if (Velocity.Y < 0) // Hit head on bottom
+                                else if (Velocity.Y < 0) 
                                 {
-                                    Position = new Vector(Position.X, platform.Position.Y + platform.Size.Y);
+                                    Position = new Vector(Position.X, entity.Position.Y + entity.Size.Y);
+
+                                    if (entity is GameBlock block)
+                                    {
+                                        block.OnHitFromBelow(this);
+                                    }
                                 }
                                 Velocity = new Vector(Velocity.X, 0);
                             }
@@ -171,9 +170,19 @@ namespace PlatformerGame.PlayerCharacters
             {
                 if (entity == this || !entity.Active) continue;
 
-               
-              
-                if(entity is Checkpoint cp)
+
+
+
+                if (entity is Collectable c)
+                {
+                    c.Collect(this);
+                    if (c is Fossil) Game.Instance.CurrentLevel.FossilsCollected++;
+                }
+                else if (entity is Hazard h)
+                {
+                    TakeDamage(h.Damage);
+                }
+                else if (entity is Checkpoint cp)
                 {
                     cp.Activate(this);
                     Game.Instance.CurrentLevel.SetActiveCheckpoint(cp);
@@ -243,11 +252,26 @@ namespace PlatformerGame.PlayerCharacters
         {
             if (invulnerabilityTimer > 0 || State == PlayerState.Dead) return;
 
-            Health -= amount;
             invulnerabilityTimer = 1.0f;
 
-            if (Health <= 0) Die();
-            else State = PlayerState.Damaged;
+            Velocity = new Vector(Velocity.X, -300f);
+
+            if (CurrentPowerUp != null)
+            {
+                CurrentPowerUp.Remove(this);
+                CurrentPowerUp = null;
+                State = PlayerState.Damaged;
+            }
+            else
+            {
+                Health -= amount;
+                State = PlayerState.Damaged;
+
+                if (Health <= 0)
+                {
+                    Die();
+                }
+            }
         }
 
         public void Die()
@@ -259,7 +283,12 @@ namespace PlatformerGame.PlayerCharacters
         public void GainLife(int amount) => Stats.GainLife();
         public void GainHealth(int amount) => Health = Math.Min(Health + amount, MaxHealth);
 
-  
+        public void ApplyPowerUp(PowerUp p)
+        {
+            CurrentPowerUp?.Remove(this);
+            CurrentPowerUp = p;
+            CurrentPowerUp.Apply(this);
+        }
 
         public void Respawn(Vector position)
         {

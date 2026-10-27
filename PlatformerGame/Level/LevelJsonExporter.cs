@@ -8,7 +8,7 @@ namespace PlatformerGame.Level
     {
         private static readonly JsonSerializerOptions _options = new JsonSerializerOptions
         {
-            WriteIndented = true, // Makes the JSON readable for debugging
+            WriteIndented = true, 
             PropertyNameCaseInsensitive = true
         };
 

@@ -12,12 +12,14 @@ namespace PlatformerGame.Enums
         LevelStart,
         Checkpoint,
         LevelEnd,
-        Enemy,
+        EnemyType1,
+        EnemyType2,
         Spikes,
         Fossil,
         Coins,
-        PowerUpBlock,
+        PowerupBlock,
         CoinBlock,
-        BreakableBlock
+        BreakableBlock,
+        HiddenBlock
     }
 }

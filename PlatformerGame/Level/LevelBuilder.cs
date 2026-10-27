@@ -27,7 +27,7 @@ namespace PlatformerGame.Level
                 TileSize = _tileSize,
                 Screens = screens,
                 Entities = new List<EntityData>(),
-                PlayerStart = new Vector(0, 0), // Default
+                PlayerStart = new Vector(0, 0), 
                 FossilCount = 0
             };
         }
@@ -42,7 +42,7 @@ namespace PlatformerGame.Level
                 Type = type.ToString(),
                 X = x,
                 Y = y,
-                Width = _tileSize,  // Default size, can be overridden
+                Width = _tileSize,  
                 Height = _tileSize
             };
 
@@ -77,13 +77,11 @@ namespace PlatformerGame.Level
                 return errors;
             }
 
-            // Check for Player Start
             if (_data.PlayerStart == new Vector(0, 0) && !_data.Entities.Any(e => e.Type == EntityType.LevelStart.ToString()))
             {
                 errors.Add("Warning: No player start position set, and no 'LevelStart' entity found.");
             }
 
-            // Check for Level End
             if (!_data.Entities.Any(e => e.Type == EntityType.LevelEnd.ToString()))
             {
                 errors.Add("Error: Level must have at least one 'LevelEnd' entity.");
@@ -97,7 +95,6 @@ namespace PlatformerGame.Level
             var validationErrors = Validate();
             if (validationErrors.Any(e => e.StartsWith("Error")))
             {
-                // In a real app, you might throw an exception or show a UI popup
                 throw new System.Exception("Cannot build level: " + string.Join(", ", validationErrors));
             }
             return _data;

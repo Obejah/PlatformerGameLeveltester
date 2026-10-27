@@ -2,7 +2,7 @@
 using PlatformerGame.Enums;
 using PlatformerGame.Interfaces;
 using PlatformerGame.Level;
-using PlatformerGame.PlayerCharacters; // For Player
+using PlatformerGame.PlayerCharacters; 
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -105,11 +105,22 @@ namespace PlatformerGame.Level
                     return new Checkpoint(id, pos, size);
                 case EntityType.LevelEnd:
                     return new LevelEnd(id, pos, size);
-                case EntityType.Enemy:
+                case EntityType.EnemyType1:
+                    return new EnemyType1(id, pos, size);
+                case EntityType.EnemyType2:
+                    return new EnemyType2(id, pos, size);
                 case EntityType.Fossil:
                     return new Fossil(id, pos, size, 1, false);
                 case EntityType.Spikes:
-                    return new Spikes(id, pos, size, 1); // 1 damage
+                    return new Spikes(id, pos, size, 1);
+                case EntityType.PowerupBlock:
+                    return new PowerUpBlock(id, pos, size, new MushroomPowerUp());
+                case EntityType.CoinBlock:
+                    return new CoinBlock(id, pos, size, 5);
+                case EntityType.BreakableBlock:
+                    return new BreakableBlock(id, pos, size);
+                case EntityType.HiddenBlock:
+                    return new HiddenBlock(id, pos, size);
                 default:
                     Console.WriteLine($"Warning: Entity type '{type}' not implemented yet.");
                     return null;

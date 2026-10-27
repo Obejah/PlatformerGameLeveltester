@@ -9,7 +9,6 @@ namespace PlatformerGame.Level
 {
     public static class LdtkImporter
     {
-        // NEW METHOD: Get all level names to populate our progression list
         public static List<string> GetLevelIdentifiers(string filePath)
         {
             var levelNames = new List<string>();
@@ -30,7 +29,6 @@ namespace PlatformerGame.Level
 
         public static LevelData Import(string filePath, string targetLevelIdentifier = null)
         {
-            // ... (Keep the existing Import method exactly as it is) ...
             if (!File.Exists(filePath))
                 throw new FileNotFoundException($"Could not find LDtk file at: {filePath}");
 
