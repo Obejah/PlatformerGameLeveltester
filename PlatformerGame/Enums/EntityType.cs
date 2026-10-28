@@ -13,6 +13,7 @@ namespace PlatformerGame.Enums
         Checkpoint,
         LevelEnd,
         EnemyType1,
+        Enemy,
         EnemyType2,
         Spikes,
         Fossil,

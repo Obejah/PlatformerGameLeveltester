@@ -13,8 +13,6 @@ namespace PlatformerGame.Core
         private static Game _instance;
         public static Game Instance => _instance ??= new Game();
 
-        // --- NEW EVENT ---
-        // The UI will subscribe to this to redraw the Canvas when a level changes
         public event Action OnLevelLoaded;
 
         public GameState State { get; set; } = GameState.Playing;
@@ -24,13 +22,17 @@ namespace PlatformerGame.Core
         public Camera Camera { get; private set; }
         public PlayerStats Stats { get; private set; }
 
-        // --- LEVEL PROGRESSION ---
         private string _ldtkFilePath;
         private List<string> _levelIdentifiers;
         private int _currentLevelIndex;
 
         private DispatcherTimer _gameTimer;
         private DateTime _lastTick;
+
+        public event Action OnStateChanged;
+
+        public int CurrentLevelIndex => _currentLevelIndex;
+        public bool HasNextLevel() => _levelIdentifiers != null && _currentLevelIndex < _levelIdentifiers.Count - 1;
 
         public void Initialize(double viewportWidth, double viewportHeight)
         {
@@ -49,20 +51,15 @@ namespace PlatformerGame.Core
             _gameTimer.Start();
         }
 
-        // NEW METHOD: Start the campaign from an LDtk file
-        public void StartCampaign(string ldtkPath)
+        public void LoadCampaignLevels(string ldtkPath)
         {
             _ldtkFilePath = ldtkPath;
             _levelIdentifiers = LdtkImporter.GetLevelIdentifiers(ldtkPath);
 
             if (_levelIdentifiers == null || _levelIdentifiers.Count == 0)
-            {
                 throw new Exception("No levels found in LDtk file!");
-            }
-
-            _currentLevelIndex = 0;
-            LoadCurrentLevel();
         }
+
 
         private void LoadCurrentLevel()
         {
@@ -70,34 +67,27 @@ namespace PlatformerGame.Core
             LevelData data = LdtkImporter.Import(_ldtkFilePath, levelName);
 
             CurrentLevel = new aLevel(data);
-            // Default camera bounds, ideally you'd read this from LDtk level width/height
             Camera.SetLevelBounds(1920 * data.Screens, 1080);
 
             Player = new Player(0, CurrentLevel.GetSpawnPoint());
             Camera.Follow(Player);
 
             State = GameState.Playing;
-
-            // Tell the UI to redraw
             OnLevelLoaded?.Invoke();
         }
 
         public void LoadNextLevel()
         {
-            _currentLevelIndex++;
-
-            if (_currentLevelIndex < _levelIdentifiers.Count)
+            if (HasNextLevel())
             {
-                // Reset stats? Keep coins? That's up to you.
-                // Stats.Coins = 0; 
+                _currentLevelIndex++;
                 LoadCurrentLevel();
             }
-            else
-            {
-                // No more levels
-                GameOver();
-                MessageBox.Show("You beat the game!");
-            }
+        }
+
+        public int GetTotalLevels()
+        {
+            return _levelIdentifiers?.Count ?? 0;
         }
 
         private void GameLoop(object sender, EventArgs e)
@@ -146,18 +136,11 @@ namespace PlatformerGame.Core
             else RestartLevel();
         }
 
+
         public void OnLevelComplete()
         {
             State = GameState.LevelComplete;
-
-            // Wait 1 second before loading next level so the player can breathe
-            var transitionTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
-            transitionTimer.Tick += (s, e) =>
-            {
-                transitionTimer.Stop();
-                LoadNextLevel();
-            };
-            transitionTimer.Start();
+            OnStateChanged?.Invoke();
         }
 
         public void GameOver()
@@ -166,12 +149,22 @@ namespace PlatformerGame.Core
             _gameTimer.Stop();
         }
 
-        // Add this method back in!
+        public void LoadLevelByIndex(int index)
+        {
+            if (_levelIdentifiers == null) throw new Exception("Campaign not loaded.");
+
+            _currentLevelIndex = index;
+
+            if (_currentLevelIndex >= _levelIdentifiers.Count)
+                _currentLevelIndex = _levelIdentifiers.Count - 1;
+
+            LoadCurrentLevel();
+        }
+
         public void LoadLevel(LevelData data)
         {
             CurrentLevel = new aLevel(data);
 
-            // Set default camera bounds for the fallback
             Camera.SetLevelBounds(1920 * data.Screens, 1080);
 
             Player = new Player(0, CurrentLevel.GetSpawnPoint());
@@ -179,7 +172,6 @@ namespace PlatformerGame.Core
             Camera.Follow(Player);
             State = GameState.Playing;
 
-            // This is crucial! It tells the UI to clear the canvas and redraw
             OnLevelLoaded?.Invoke();
         }
     }

@@ -13,12 +13,16 @@ namespace PlatformerGame.Entities
         public Vector Velocity { get; set; }
         public Vector Size { get; set; }
         public bool Active { get; set; }
-        
+
+        public string TexturePath { get; set; } = "";
+
+        public Vector SpawnPosition { get; private set; }
 
         protected Entity(int id, Vector position, Vector size)
         {
             Id = id;
             Position = position;
+            SpawnPosition = position;
             Size = size;
             Velocity = new Vector(0,0);
             Active = true;
@@ -34,6 +38,14 @@ namespace PlatformerGame.Entities
         public Rect GetBounds()
         {
             return new Rect(Position.X, Position.Y, Size.X, Size.Y);
+        }
+
+        public virtual void Reset()
+        {
+            Position = SpawnPosition;
+            Velocity = new Vector(0, 0);
+
+            Active = true;
         }
     }
 }

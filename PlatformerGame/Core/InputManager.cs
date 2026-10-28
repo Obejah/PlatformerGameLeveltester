@@ -7,7 +7,7 @@ namespace PlatformerGame.Core
         public bool Left { get; private set; }
         public bool Right { get; private set; }
         public bool Run { get; private set; }
-        public bool JumpPressed { get; private set; } // True for one frame only
+        public bool JumpPressed { get; private set; }
         public bool JumpHeld { get; private set; }
         public bool Interact { get; private set; }
 
@@ -31,10 +31,8 @@ namespace PlatformerGame.Core
             if (key == Key.E) Interact = false;
         }
 
-        // Call this at the end of every frame
         public void Poll()
         {
-            // Edge detection for jump
             if (JumpHeld && !_jumpWasPressed)
             {
                 JumpPressed = true;

@@ -7,7 +7,7 @@ namespace PlatformerGame.Entities
 {
     public abstract class Enemy : Character, IDamageable
     {
-        public int Health { get; set; }
+        public int Health { get; protected set; }
         public bool IsDead { get; protected set; }
 
         public float Speed { get; set; } = 100f;
@@ -38,6 +38,13 @@ namespace PlatformerGame.Entities
             Velocity += new Vector(0, Gravity * dt);
 
             if (Velocity.Y > 1000f) Velocity = new Vector(Velocity.X, 1000f);
+        }
+        public override void Reset()
+        {
+            base.Reset();
+            Health = 1;
+            IsDead= false;
+            Direction = 1; 
         }
 
         public override void MoveAndCollide(float dt)

@@ -72,7 +72,6 @@ namespace PlatformerGame.Entities
         public HiddenBlock(int id, Vector position, Vector size)
             : base(id, position, size, false)
         {
-            // Starts invisible and non-solid
         }
 
         public override void Update(float dt) { }

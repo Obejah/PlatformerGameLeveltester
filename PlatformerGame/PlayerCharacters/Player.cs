@@ -6,6 +6,7 @@ using PlatformerGame.PlayerCharacters;
 using System;
 using System.Windows;
 using System.Windows.Documents;
+using System.Windows.Media.Animation;
 
 namespace PlatformerGame.PlayerCharacters
 {
@@ -37,6 +38,7 @@ namespace PlatformerGame.PlayerCharacters
         public bool IsTouchingWall { get; set; }
         public int WallDirection { get; set; }
 
+
         public PlayerStats Stats { get; private set; }
 
         public Player(int id, Vector position)
@@ -45,6 +47,7 @@ namespace PlatformerGame.PlayerCharacters
             Stats = new PlayerStats();
             Health = MaxHealth;
             previousPosition = position;
+
         }
 
         public override void Update(float dt)
@@ -143,7 +146,7 @@ namespace PlatformerGame.PlayerCharacters
                                     Position = new Vector(Position.X, entity.Position.Y - Size.Y);
                                     IsGrounded = true;
                                 }
-                                else if (Velocity.Y < 0) 
+                                else if (Velocity.Y < 0)
                                 {
                                     Position = new Vector(Position.X, entity.Position.Y + entity.Size.Y);
 
@@ -289,7 +292,10 @@ namespace PlatformerGame.PlayerCharacters
             CurrentPowerUp = p;
             CurrentPowerUp.Apply(this);
         }
-
+        public bool IsAlive()
+        {
+            return Health > 0 && State != PlayerState.Dead;
+        }
         public void Respawn(Vector position)
         {
             Position = position;
@@ -300,9 +306,6 @@ namespace PlatformerGame.PlayerCharacters
             CurrentPowerUp = null;
             invulnerabilityTimer = 1.5f;
         }
-
-        public bool IsAlive() => Health > 0 && State != PlayerState.Dead;
-
-        public void Interact() { }
+    
     }
 }

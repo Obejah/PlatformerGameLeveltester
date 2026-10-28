@@ -6,6 +6,7 @@ namespace PlatformerGame.Enums
 {
     public enum GameState
     {
+        Menu,
         Playing,
         Paused,
         GameOver,

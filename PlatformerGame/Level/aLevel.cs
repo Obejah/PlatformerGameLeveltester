@@ -94,33 +94,34 @@ namespace PlatformerGame.Level
             switch (type)
             {
                 case EntityType.Ground:
-                    return new Ground(id, pos, size);
+                    return new Ground(id, pos, size) { TexturePath = "/Assets/Entities/Ground.png" };
                 case EntityType.Platform:
-                    return new SolidPlatform(id, pos, size);
+                    return new SolidPlatform(id, pos, size) { TexturePath = "/Assets/Entities/Platform.png" };
                 case EntityType.OneWayPlatform:
-                    return new OneWayPlatform(id, pos, size);
-                case EntityType.LevelStart:
-                    return new LevelStart(id, pos, size);
-                case EntityType.Checkpoint:
-                    return new Checkpoint(id, pos, size);
-                case EntityType.LevelEnd:
-                    return new LevelEnd(id, pos, size);
-                case EntityType.EnemyType1:
-                    return new EnemyType1(id, pos, size);
-                case EntityType.EnemyType2:
-                    return new EnemyType2(id, pos, size);
-                case EntityType.Fossil:
-                    return new Fossil(id, pos, size, 1, false);
+                    return new OneWayPlatform(id, pos, size) { TexturePath = "/Assets/Entities/OneWayPlatform.png" };
+
                 case EntityType.Spikes:
-                    return new Spikes(id, pos, size, 1);
+                    return new Spikes(id, pos, size) { TexturePath = "/Assets/Entities/Spikes.png" };
+                case EntityType.Fossil:
+                    return new Fossil(id, pos, size, 1, false) { TexturePath = "/Assets/Entities/Fossil.png" };
+
+                case EntityType.EnemyType1:
+                    return new EnemyType1(id, pos, size) { TexturePath = "/Assets/Entities/Enemy1.png" };
+                case EntityType.EnemyType2:
+                    return new EnemyType2(id, pos, size) { TexturePath = "/Assets/Entities/Enemy2.png" };
+
                 case EntityType.PowerupBlock:
-                    return new PowerUpBlock(id, pos, size, new MushroomPowerUp());
+                    return new PowerUpBlock(id, pos, size, new PlayerCharacters.MushroomPowerUp()) { TexturePath = "/Assets/Entities/PowerupBlock.png" };
                 case EntityType.CoinBlock:
-                    return new CoinBlock(id, pos, size, 5);
+                    return new CoinBlock(id, pos, size, 5) { TexturePath = "/Assets/Entities/BreakableBlock.png" };
                 case EntityType.BreakableBlock:
-                    return new BreakableBlock(id, pos, size);
-                case EntityType.HiddenBlock:
-                    return new HiddenBlock(id, pos, size);
+                    return new BreakableBlock(id, pos, size) { TexturePath = "/Assets/Entities/BreakableBlock.png" };
+
+                case EntityType.Checkpoint:
+                    return new Checkpoint(id, pos, size) { TexturePath = "/Assets/Entities/Checkpoint.png" };
+                case EntityType.LevelEnd:
+                    return new LevelEnd(id, pos, size) { TexturePath = "/Assets/Entities/LevelEnd.png" };
+
                 default:
                     Console.WriteLine($"Warning: Entity type '{type}' not implemented yet.");
                     return null;
@@ -143,8 +144,9 @@ namespace PlatformerGame.Level
 
             foreach (var entity in Entities)
             {
-                entity.Active = true; 
+                entity.Reset();
             }
+
         }
     }
 }

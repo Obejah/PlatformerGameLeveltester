@@ -9,13 +9,79 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Levels\" />
+    <None Remove="Assets\Entities\BreakableBlock.png" />
+    <None Remove="Assets\Entities\Checkpoint.png" />
+    <None Remove="Assets\Entities\Enemy1.png" />
+    <None Remove="Assets\Entities\Enemy2.png" />
+    <None Remove="Assets\Entities\Fossil.png" />
+    <None Remove="Assets\Entities\Ground.png" />
+    <None Remove="Assets\Entities\LevelEnd.png" />
+    <None Remove="Assets\Entities\OneWayPlatform.png" />
+    <None Remove="Assets\Entities\Platform.png" />
+    <None Remove="Assets\Entities\PowerupBlock.png" />
+    <None Remove="Assets\Entities\Spikes.png" />
+    <None Remove="Assets\LevelSelectScreen.png" />
+    <None Remove="Assets\PlayerMushroom.png" />
+    <None Remove="Assets\PlayerSheet.png" />
+    <None Remove="Assets\PlayerStatic.png" />
+    <None Remove="Assets\TitleScreen.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Levels\Testlevel1.ldtk">
+    <None Update="Levels\level.ldtk">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\Entities\BreakableBlock.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Entities\Checkpoint.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Entities\Enemy1.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Entities\Enemy2.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Entities\Fossil.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Entities\Ground.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Entities\LevelEnd.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Entities\OneWayPlatform.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Entities\Platform.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Entities\PowerupBlock.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Entities\Spikes.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\LevelSelectScreen.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\PlayerMushroom.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\PlayerSheet.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\PlayerStatic.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\TitleScreen.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
 </Project>

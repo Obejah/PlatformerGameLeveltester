@@ -15,5 +15,11 @@ namespace PlatformerGame.Entities
         }
 
         public abstract void Collect(Player p);
+
+        public override void Reset()
+        {
+            base.Reset();
+            IsCollected = false;
+        }
     }
 }
